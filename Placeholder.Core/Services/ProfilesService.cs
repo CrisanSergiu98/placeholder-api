@@ -48,6 +48,38 @@ public class ProfilesService : IProfilesService
         return profiles;
     }
 
+    public List<string> GetRandomPhoneNumbers(int quantity)
+    {
+        List<string> phoneNumbers = new List<string>();
+        for (int i = 0; i < quantity; i++)
+        {
+            phoneNumbers.Add(GeneratePhoneNumber());
+        }
+        return phoneNumbers;
+    }
+
+    public List<string> GetRandomDobs(int quantity)
+    {
+        List<string> dobs = new List<string>();
+        for (int i = 0; i < quantity; i++)
+        {
+            dobs.Add(GenerateDob());
+        }
+        return dobs;
+    }
+
+    public List<string> GetRandomEmails(int quantity)
+    {
+        List<string> emails = new List<string>();
+        var firstNames = _profilesRepository.GetRandomFirstNames(quantity);
+        var lastNames = _profilesRepository.GetRandomLastNames(quantity);
+        for (int i = 0; i < quantity; i++)
+        {
+            emails.Add(GenerateEmail(firstNames[i], lastNames[i]));
+        }
+        return emails;
+    }    
+
     private string GeneratePhoneNumber()
     {
         var areaCode = _random.Next(200, 999);

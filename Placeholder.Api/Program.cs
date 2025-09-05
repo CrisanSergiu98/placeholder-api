@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Placeholder.Core;
 using Placeholder.Data;
+using PlaceHolder.Api.Controllers;
 using PlaceHolder.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,5 +20,6 @@ app.UseHttpsRedirection();
 app.UseMiddleware<ApiKeyAuthenticationMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
+app.MapAuxiliaryEndpoints();
 
 app.Run();
