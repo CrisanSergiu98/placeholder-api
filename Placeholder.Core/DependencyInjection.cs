@@ -9,6 +9,7 @@ public static class DependencyInjection
     public static IServiceCollection AddCore(this IServiceCollection services)
     {
         services.AddSingleton<IProfilesService, ProfilesService>();
+        services.AddSingleton<IAddressService, AddressService>();
         
         return services;
     }
