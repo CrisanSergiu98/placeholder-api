@@ -14,26 +14,24 @@ public class AddressRepository : IAddressRepository
         _cities = LoadCityStatePairs(Path.Combine(AppContext.BaseDirectory, "Data", "cities_states.csv"));
     }
 
-    public List<string> GetAddresses(int quantity)
+    public List<string> GetRandomStreetNames(int quantity)
     {
-        var addresses = new List<string>();
-
+        List<string> streetNames = new List<string>();
         for (int i = 0; i < quantity; i++)
         {
-            var houseNumber = _random.Next(1, 9999);
-            var street = _streetNames[_random.Next(_streetNames.Count)];
-            var unit = _random.NextDouble() < 0.3 ? $"Apt {_random.Next(1, 999)}" : null;
-            var (city, state) = _cities[_random.Next(_cities.Count)];
-            var zipCode = _random.Next(10000, 99999).ToString("D5");
-
-            var fullAddress = $"{houseNumber} {street}" +
-                              (unit != null ? $" {unit}" : "") +
-                              $", {city}, {state} {zipCode}";
-
-            addresses.Add(fullAddress);
+            streetNames.Add(_streetNames[_random.Next(_streetNames.Count)]);
         }
+        return streetNames;
+    }
 
-        return addresses;
+    public List<(string,string)> GetRandomCities(int quantity)
+    {
+        List<(string, string)> cities = new List<(string,string)>();
+        for (int i = 0; i < quantity; i++)
+        {
+            cities.Add(_cities[_random.Next(_cities.Count)]);
+        }
+        return cities;
     }
 
     private List<string> LoadLines(string path) =>
