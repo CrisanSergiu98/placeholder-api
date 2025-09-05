@@ -78,7 +78,19 @@ public class ProfilesService : IProfilesService
             emails.Add(GenerateEmail(firstNames[i], lastNames[i]));
         }
         return emails;
-    }    
+    }
+
+    public List<string> GetRandomNames(int quantity)
+    {
+        List<string> names = new List<string>();
+        var firstNames = _profilesRepository.GetRandomFirstNames(quantity);
+        var lastNames = _profilesRepository.GetRandomLastNames(quantity);
+        for (int i = 0; i < quantity; i++)
+        {
+            names.Add($"{firstNames[i]} {lastNames[i]}" );
+        }
+        return names;
+    }
 
     private string GeneratePhoneNumber()
     {

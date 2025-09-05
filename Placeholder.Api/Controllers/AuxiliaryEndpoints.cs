@@ -24,5 +24,11 @@ public static class AuxiliaryEndpoints
             var dobs = service.GetRandomDobs(quantity);
             return Results.Ok(dobs);
         });
+
+        app.MapGet("/names", ([FromHeader(Name = "X-API-Key")] string apiKey, int quantity, IProfilesService service) =>
+        {
+            var names = service.GetRandomNames(quantity);
+            return Results.Ok(names);
+        });
     }
 }
