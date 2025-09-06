@@ -17,6 +17,7 @@ PlaceholderApi gives you instant access to high-quality fake data—no external 
 - ✅ RESTful architecture with clean, intuitive endpoints  
 - ✅ Supports both controller-based and minimal API routing  
 - ✅ CSV-backed data generation for realistic and customizable output  
+- ✅ Asynchronous address generation for high-performance batch processing  
 - ✅ Easily extensible—add new endpoints for companies, job titles, lorem text, and more  
 - ✅ Query parameters for flexible data generation (e.g., quantity, filters, format)  
 - ✅ Ready for Swagger/OpenAPI documentation and testing
@@ -69,9 +70,10 @@ https://localhost:{port}/swagger
 
 ## 🔑 Core Concepts
 
-- **ProfilesService** – Orchestrates the generation of mock profiles using injected repositories  
+- **ProfilesService** – Orchestrates the generation of mock profiles using injected repositories and async address generation  
 - **ProfilesRepository** – Loads CSV-backed data and generates randomized profile fields  
 - **AddressRepository** – Supplies random addresses from a seed file  
+- **AddressService** – Generates addresses asynchronously for parallel performance  
 - **Minimal API Endpoints** – Lightweight routes for atomic data types like phones, emails, and DOBs  
 - **Controllers** – Used for structured resources like `/profiles`
 
@@ -132,13 +134,20 @@ dotnet run --project PlaceholderApi
 
 ---
 
+## ⚙️ Async Usage in the Project
+
+This project uses asynchronous programming to enable parallel data generation, improving performance during high-volume operations. CSV file loading remains synchronous, as it's only performed once at startup and doesn't impact runtime responsiveness.
+
+---
+
 ## 🛤️ Roadmap & Future Ideas
 
 - Add support for company names and job titles  
 - CSV or Excel export options  
 - Seeded randomness for reproducible results  
 - Rate limiting and API key support  
-- Docker containerization
+- Docker containerization  
+- Async CSV reloading for dynamic data updates
 
 ---
 
