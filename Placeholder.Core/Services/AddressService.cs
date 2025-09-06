@@ -10,13 +10,12 @@ public class AddressService : IAddressService
     {
         _addressRepository = addressRepository;
     }
-    public List<string> GetRandomAddresses(int quantity)
+    public async Task<List<string>> GetRandomAddresses(int quantity)
     {
-        var addresses = new List<string>();
-        var streetNames = _addressRepository.GetRandomStreetNames(quantity);
-        var cities = _addressRepository.GetRandomCities(quantity);
+        var streetNames = await _addressRepository.GetRandomStreetNames(quantity);
+        var cities = await _addressRepository.GetRandomCities(quantity);
 
-        for (int i = 0; i < quantity; i++)
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
             var houseNumber = _random.Next(1, 9999);
             var street = streetNames[i];
@@ -24,13 +23,12 @@ public class AddressService : IAddressService
             var (city, state) = cities[i];
             var zipCode = _random.Next(10000, 99999).ToString("D5");
 
-            var fullAddress = $"{houseNumber} {street}" +
+            return $"{houseNumber} {street}" +
                               (unit != null ? $" {unit}" : "") +
                               $", {city}, {state} {zipCode}";
+        }));
 
-            addresses.Add(fullAddress);
-        }
-
-        return addresses;
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 }

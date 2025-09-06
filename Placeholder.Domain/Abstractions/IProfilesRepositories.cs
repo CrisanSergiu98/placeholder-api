@@ -4,6 +4,6 @@ namespace Placeholder.Domain.Abstractions;
 
 public interface IProfilesRepository
 {
-    List<string> GetRandomFirstNames(int quantity);
-    List<string> GetRandomLastNames(int quantity);
+    Task<List<string>> GetRandomFirstNames(int quantity);
+    Task<List<string>> GetRandomLastNames(int quantity);
 }

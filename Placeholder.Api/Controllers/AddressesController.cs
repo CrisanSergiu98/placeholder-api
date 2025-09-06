@@ -13,8 +13,9 @@ public class AddressesController : ControllerBase
         _addressService = addressService;
     }
     [HttpGet]    
-    public List<string> GetAddresses([FromHeader(Name = "X-API-Key")] string apiKey, int quantity)
+    public async Task<IActionResult> GetAddresses([FromHeader(Name = "X-API-Key")] string apiKey, int quantity)
     {
-        return _addressService.GetRandomAddresses(quantity);
+        var result = await _addressService.GetRandomAddresses(quantity);
+        return Ok(result);
     }
 }

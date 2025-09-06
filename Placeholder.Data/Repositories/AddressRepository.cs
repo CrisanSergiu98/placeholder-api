@@ -14,24 +14,24 @@ public class AddressRepository : IAddressRepository
         _cities = LoadCityStatePairs(Path.Combine(AppContext.BaseDirectory, "Data", "cities_states.csv"));
     }
 
-    public List<string> GetRandomStreetNames(int quantity)
+    public async Task<List<string>> GetRandomStreetNames(int quantity)
     {
-        List<string> streetNames = new List<string>();
-        for (int i = 0; i < quantity; i++)
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
-            streetNames.Add(_streetNames[_random.Next(_streetNames.Count)]);
-        }
-        return streetNames;
+            return _streetNames[_random.Next(_streetNames.Count)];
+        }));
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
-    public List<(string,string)> GetRandomCities(int quantity)
+    public async Task<List<(string, string)>> GetRandomCities(int quantity)
     {
-        List<(string, string)> cities = new List<(string,string)>();
-        for (int i = 0; i < quantity; i++)
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
-            cities.Add(_cities[_random.Next(_cities.Count)]);
-        }
-        return cities;
+            return _cities[_random.Next(_cities.Count)];
+        }));
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
     private List<string> LoadLines(string path) =>

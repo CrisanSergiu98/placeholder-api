@@ -17,14 +17,13 @@ public class ProfilesService : IProfilesService
         _addressService = addressService;
     }
 
-    public List<Profile> GetRandomProfiles(int quantity)
+    public async Task<List<Profile>> GetRandomProfiles(int quantity)
     {
-        var profiles = new List<Profile>();
-        var addresses = _addressService.GetRandomAddresses(quantity);
-        var firstNames = _profilesRepository.GetRandomFirstNames(quantity);
-        var lastNames = _profilesRepository.GetRandomLastNames(quantity);
+        var addresses = await _addressService.GetRandomAddresses(quantity);
+        var firstNames = await _profilesRepository.GetRandomFirstNames(quantity);
+        var lastNames = await _profilesRepository.GetRandomLastNames(quantity);
 
-        for (int i = 0; i < quantity; i++)
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
             var firstName = firstNames[i];
             var lastName = lastNames[i];
@@ -33,7 +32,7 @@ public class ProfilesService : IProfilesService
             var email = GenerateEmail(firstName, lastName);
             var dob = GenerateDob();
 
-            profiles.Add(new Profile
+            return new Profile
             {
                 Id = Guid.NewGuid(),
                 FirstName = firstName,
@@ -42,54 +41,58 @@ public class ProfilesService : IProfilesService
                 Phone = phone,
                 Email = email,
                 Dob = dob
-            });
-        }
+            };
+        }));
 
-        return profiles;
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
-    public List<string> GetRandomPhoneNumbers(int quantity)
+    public async Task<List<string>> GetRandomPhoneNumbers(int quantity)
     {
-        List<string> phoneNumbers = new List<string>();
-        for (int i = 0; i < quantity; i++)
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
-            phoneNumbers.Add(GeneratePhoneNumber());
-        }
-        return phoneNumbers;
+            return GeneratePhoneNumber();
+        }));
+
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
-    public List<string> GetRandomDobs(int quantity)
+    public async Task<List<string>> GetRandomDobs(int quantity)
     {
-        List<string> dobs = new List<string>();
-        for (int i = 0; i < quantity; i++)
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
-            dobs.Add(GenerateDob());
-        }
-        return dobs;
+            return GenerateDob();
+        }));
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
-    public List<string> GetRandomEmails(int quantity)
+    public async Task<List<string>> GetRandomEmails(int quantity)
     {
-        List<string> emails = new List<string>();
-        var firstNames = _profilesRepository.GetRandomFirstNames(quantity);
-        var lastNames = _profilesRepository.GetRandomLastNames(quantity);
-        for (int i = 0; i < quantity; i++)
+        var firstNames = await _profilesRepository.GetRandomFirstNames(quantity);
+        var lastNames = await _profilesRepository.GetRandomLastNames(quantity);
+
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
-            emails.Add(GenerateEmail(firstNames[i], lastNames[i]));
-        }
-        return emails;
+            return GenerateEmail(firstNames[i], lastNames[i]);
+        }));
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
-    public List<string> GetRandomNames(int quantity)
+    public async Task<List<string>> GetRandomNames(int quantity)
     {
-        List<string> names = new List<string>();
-        var firstNames = _profilesRepository.GetRandomFirstNames(quantity);
-        var lastNames = _profilesRepository.GetRandomLastNames(quantity);
-        for (int i = 0; i < quantity; i++)
+        var firstNames = await _profilesRepository.GetRandomFirstNames(quantity);
+        var lastNames = await _profilesRepository.GetRandomLastNames(quantity);
+
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
-            names.Add($"{firstNames[i]} {lastNames[i]}" );
-        }
-        return names;
+            return $"{firstNames[i]} {lastNames[i]}";
+        }));
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
     private string GeneratePhoneNumber()

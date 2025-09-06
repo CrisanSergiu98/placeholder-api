@@ -14,8 +14,9 @@ public class ProfilesController : ControllerBase
         _profilesService = profilesService;
     }
     [HttpGet]    
-    public List<Profile> GetProfiles([FromHeader(Name = "X-API-Key")] string apiKey, int quantity)
+    public async Task<ActionResult> GetProfiles([FromHeader(Name = "X-API-Key")] string apiKey, int quantity)
     {
-        return _profilesService.GetRandomProfiles(quantity);
+        var results = await _profilesService.GetRandomProfiles(quantity);
+        return Ok(results);
     }
 }

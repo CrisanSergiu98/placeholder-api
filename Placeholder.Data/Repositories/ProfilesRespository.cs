@@ -17,24 +17,24 @@ public class ProfilesRepository : IProfilesRepository
         _lastNames = LoadLines(Path.Combine(AppContext.BaseDirectory, "Data", "last_names.csv"));
     }
 
-    public List<string> GetRandomFirstNames(int quantity)
+    public async Task<List<string>> GetRandomFirstNames(int quantity)
     {
-        List<string> firstNames = new List<string>();
-        for (int i = 0; i < quantity; i++)
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
-            firstNames.Add(_firstNames[_random.Next(_firstNames.Count)]);
-        }
-        return firstNames;
+            return _firstNames[_random.Next(_firstNames.Count)];
+        }));
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
-    public List<string> GetRandomLastNames(int quantity)
+    public async Task<List<string>> GetRandomLastNames(int quantity)
     {
-        List<string> lastNames = new List<string>();
-        for (int i = 0; i < quantity; i++)
+        var tasks = Enumerable.Range(0, quantity).Select(i => Task.Run(() =>
         {
-            lastNames.Add(_lastNames[_random.Next(_lastNames.Count)]);
-        }
-        return lastNames;
+            return _lastNames[_random.Next(_lastNames.Count)];
+        }));
+        var results = await Task.WhenAll(tasks);
+        return results.ToList();
     }
 
     private List<string> LoadLines(string path) =>
